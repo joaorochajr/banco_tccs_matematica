@@ -82,11 +82,11 @@ export default function HomePage() {
 
   return (
     <>
-      {/* HEADER FULL WIDTH */}
+   
       <header
         className="relative overflow-hidden"
       >
-        {/* Fundo matemático */}
+        
         <div
           className="absolute inset-0"
           style={{
@@ -98,7 +98,7 @@ export default function HomePage() {
           }}
         />
 
-        {/* Conteúdo centralizado */}
+       
         <div className="relative z-10 max-w-6xl mx-auto px-6 pt-20 pb-10 text-center">
           <h1
             className="text-4xl md:text-5xl font-bold mb-3"
@@ -126,9 +126,9 @@ export default function HomePage() {
         </div>
       </header>
 
-      {/* CONTEÚDO */}
+     
       <main className="max-w-6xl mx-auto px-6 pt-0 pb-10">
-        {/* Busca */}
+        
         <SearchBar
           value={query}
           onChange={setQuery}
@@ -136,7 +136,7 @@ export default function HomePage() {
           totalCount={data.length}
         />
 
-        {/* Filtro por ano */}
+        
         {!loading && years.length > 0 && (
           <YearFilter
             years={years}
@@ -145,14 +145,14 @@ export default function HomePage() {
           />
         )}
 
-        {/* Erro */}
+       
         {error && (
           <div className="p-4 text-sm text-red-600 border border-red-200 rounded">
             {error}
           </div>
         )}
 
-        {/* Contador */}
+        
         {!loading && !error && (
           <p className="text-sm mb-3 text-gray-600">
             Exibindo <strong>{filtered.length}</strong> resultado
@@ -160,7 +160,7 @@ export default function HomePage() {
           </p>
         )}
 
-        {/* Skeleton */}
+        
         {loading && !error && (
           <div className="space-y-3">
             {Array.from({ length: 8 }).map((_, i) => (
@@ -172,7 +172,7 @@ export default function HomePage() {
           </div>
         )}
 
-        {/* Tabela */}
+        
         {!loading && !error && (
           <TCCTable
             data={filtered}
