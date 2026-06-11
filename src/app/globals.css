@@ -7,7 +7,8 @@
     font-family: 'Sora', sans-serif;
     background-color: #ffffff;
     color: #1a1a1a;
-    min-height: 100vh;
+    /* height controlled by the app shell via 100dvh */
+    overflow: hidden;
   }
 }
 
@@ -69,4 +70,156 @@
     0% { background-position: -200% 0; }
     100% { background-position: 200% 0; }
   }
-}
+
+  .tcc-row {
+    animation: rowFadeIn 0.35s ease both;
+    transition: background 0.15s;
+  }
+
+  .tcc-row:hover {
+    background: #eef3fb !important;
+  }
+
+  @keyframes rowFadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* ── View mode toggle ─────────────────────────────── */
+  .view-mode-toggle {
+    display: inline-flex;
+    align-items: center;
+    background: #f0f4fb;
+    border: 1px solid #d6e0f0;
+    border-radius: 8px;
+    padding: 3px;
+    gap: 2px;
+  }
+
+  .mode-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 12px;
+    border-radius: 6px;
+    border: none;
+    background: transparent;
+    color: #666;
+    font-size: 12px;
+    font-weight: 500;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 0.18s, color 0.18s, box-shadow 0.18s;
+    white-space: nowrap;
+    user-select: none;
+  }
+
+  .mode-btn:hover:not(.active) {
+    background: #e0e8f8;
+    color: #1B3C73;
+  }
+
+  .mode-btn.active {
+    background: #1B3C73;
+    color: #fff;
+    box-shadow: 0 1px 4px rgba(27,60,115,0.25);
+  }
+
+  /* ── Scrollbar: thin & elegant inside table containers ── */
+  [data-scroll] {
+    scrollbar-width: thin;
+    scrollbar-color: #c5d3e8 transparent;
+  }
+  [data-scroll]::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  [data-scroll]::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  [data-scroll]::-webkit-scrollbar-thumb {
+    background: #c5d3e8;
+    border-radius: 99px;
+  }
+  [data-scroll]::-webkit-scrollbar-thumb:hover {
+    background: #1B3C73;
+  }
+
+  /* ── Pagination bar ───────────────────────────────── */
+  .pagination-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid #eee;
+  }
+
+  .pagination-info {
+    font-size: 12px;
+    color: #888;
+  }
+
+  .pagination-controls {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .page-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 32px;
+    height: 32px;
+    padding: 0 6px;
+    border-radius: 6px;
+    border: 1px solid #d6e0f0;
+    background: #fff;
+    color: #1B3C73;
+    font-size: 13px;
+    font-family: inherit;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s, color 0.15s, transform 0.1s;
+    user-select: none;
+  }
+
+  .page-btn:hover:not(:disabled):not(.current) {
+    background: #eef3fb;
+    border-color: #1B3C73;
+    transform: translateY(-1px);
+  }
+
+  .page-btn:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+
+  .page-btn.current {
+    background: #1B3C73;
+    border-color: #1B3C73;
+    color: #fff;
+    cursor: default;
+    box-shadow: 0 1px 4px rgba(27,60,115,0.3);
+  }
+
+  .page-ellipsis {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 28px;
+    height: 32px;
+    font-size: 13px;
+    color: #aaa;
+    user-select: none;
+  }
+}

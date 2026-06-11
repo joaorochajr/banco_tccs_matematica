@@ -23,15 +23,8 @@ export default function HomePage() {
       .then(r => r.json())
       .then((json: TCC[]) => {
         const normalized = json.filter(
-          t =>
-            t.autor?.trim() &&
-            t.titulo?.trim() &&
-            t.ano
-        ).map(t => ({
-          ...t,
-          ano: Number(t.ano)
-        }))
-
+          t => t.autor?.trim() && t.titulo?.trim() && t.ano
+        ).map(t => ({ ...t, ano: Number(t.ano) }))
         setData(normalized)
         setLoading(false)
       })
@@ -42,7 +35,7 @@ export default function HomePage() {
   }, [])
 
   const years = useMemo(
-    () => [...new Set(data.map(t => Number(t.ano)).filter(year => !isNaN(year) && year > 0))].sort((a, b) => b - a),
+    () => [...new Set(data.map(t => Number(t.ano)).filter(y => !isNaN(y) && y > 0))].sort((a, b) => b - a),
     [data]
   )
 
@@ -74,16 +67,8 @@ export default function HomePage() {
     }
 
     return [...result].sort((a, b) => {
-      const va =
-        sortField === 'ano'
-          ? a[sortField]
-          : String(a[sortField]).toLowerCase()
-
-      const vb =
-        sortField === 'ano'
-          ? b[sortField]
-          : String(b[sortField]).toLowerCase()
-
+      const va = sortField === 'ano' ? a[sortField] : String(a[sortField]).toLowerCase()
+      const vb = sortField === 'ano' ? b[sortField] : String(b[sortField]).toLowerCase()
       if (va < vb) return sortDir === 'asc' ? -1 : 1
       if (va > vb) return sortDir === 'asc' ? 1 : -1
       return 0
@@ -91,107 +76,96 @@ export default function HomePage() {
   }, [data, query, yearFilter, sortField, sortDir])
 
   return (
-    <>
-   
-      <header
-        className="relative overflow-hidden mb-12"
-      >
-        
+    /* ── App shell: full viewport height, no page scroll ── */
+    <div style={{ height: '100dvh', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+
+      {/* ── Header ── */}
+      <header className="relative overflow-hidden" style={{ flexShrink: 0 }}>
         <div
           className="absolute inset-0"
           style={{
             backgroundImage: "url('/books-bg.jpg')",
             backgroundSize: 'cover',
-            backgroundPosition: 'center'
+            backgroundPosition: 'center',
           }}
         />
-
-        <div className="absolute inset-0 bg-black/60"></div>
-
-       
-        <div className="relative z-10 max-w-6xl mx-auto px-6 pt-20 pb-10 text-center">
-          <h1
-            className="text-4xl md:text-5xl font-bold mb-3 text-white"
-          >
+        <div className="absolute inset-0 bg-black/60" />
+        <div className="relative z-10 max-w-6xl mx-auto px-6 pt-10 pb-6 text-center">
+          <h1 className="text-4xl md:text-5xl font-bold mb-3 text-white">
             Banco de TCCs
           </h1>
-
           <div
             className="mx-auto"
-            style={{
-              width: 70,
-              height: 4,
-              background: '#2EA3F2',
-              borderRadius: 999,
-            }}
+            style={{ width: 70, height: 4, background: '#2EA3F2', borderRadius: 999 }}
           />
-
-          <p
-            className="mt-4 text-base text-gray-200"
-          >
+          <p className="mt-3 text-base text-gray-200">
             Trabalhos de Conclusão de Curso — Matemática · UEFS
           </p>
         </div>
       </header>
 
-     
-      <main className="max-w-6xl mx-auto px-6 pt-0 pb-10">
-        
-        <SearchBar
-          value={query}
-          onChange={setQuery}
-          resultCount={filtered.length}
-          totalCount={data.length}
-        />
-
-        
-        {!loading && years.length > 0 && (
-          <YearFilter
-            years={years}
-            selected={yearFilter}
-            onSelect={setYearFilter}
+      {/* ── Main: fills remaining height ── */}
+      <main
+        style={{
+          flex: 1,
+          minHeight: 0,
+          overflow: 'hidden',
+          display: 'flex',
+          flexDirection: 'column',
+          maxWidth: '72rem',   /* max-w-6xl */
+          width: '100%',
+          margin: '0 auto',
+          padding: '20px 24px 20px',
+        }}
+      >
+        {/* Static top: search + filters + count — does NOT scroll */}
+        <div style={{ flexShrink: 0 }}>
+          <SearchBar
+            value={query}
+            onChange={setQuery}
+            resultCount={filtered.length}
+            totalCount={data.length}
           />
-        )}
 
-       
-        {error && (
-          <div className="p-4 text-sm text-red-600 border border-red-200 rounded">
-            {error}
-          </div>
-        )}
+          {!loading && years.length > 0 && (
+            <YearFilter years={years} selected={yearFilter} onSelect={setYearFilter} />
+          )}
 
-        
-        {!loading && !error && (
-          <p className="text-sm mb-3 text-gray-600">
-            Exibindo <strong>{filtered.length}</strong> resultado
-            {filtered.length !== 1 ? 's' : ''}:
-          </p>
-        )}
+          {error && (
+            <div className="p-4 text-sm text-red-600 border border-red-200 rounded mt-3">
+              {error}
+            </div>
+          )}
 
-        
+          {!loading && !error && (
+            <p className="text-sm mb-2 text-gray-600">
+              Exibindo <strong>{filtered.length}</strong> resultado
+              {filtered.length !== 1 ? 's' : ''}:
+            </p>
+          )}
+        </div>
+
+        {/* Loading skeleton */}
         {loading && !error && (
-          <div className="space-y-3">
+          <div className="space-y-3" style={{ overflowY: 'auto', flex: 1 }}>
             {Array.from({ length: 8 }).map((_, i) => (
-              <div
-                key={i}
-                className="shimmer-loading h-10 rounded"
-              />
+              <div key={i} className="shimmer-loading h-10 rounded" />
             ))}
           </div>
         )}
 
-        
+        {/* Table area — stretches to fill all remaining space */}
         {!loading && !error && (
-          <TCCTable
-            data={filtered}
-            sortField={sortField}
-            sortDir={sortDir}
-            onSort={handleSort}
-          />
+          <div style={{ flex: 1, minHeight: 0, overflow: 'hidden' }}>
+            <TCCTable
+              data={filtered}
+              sortField={sortField}
+              sortDir={sortDir}
+              onSort={handleSort}
+            />
+          </div>
         )}
-
-       
       </main>
-    </>
+    </div>
   )
 }
