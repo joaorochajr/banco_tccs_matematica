@@ -22,7 +22,12 @@ export default function HomePage() {
     fetch(API_URL)
       .then(r => r.json())
       .then((json: TCC[]) => {
-        const normalized = json.map(t => ({
+        const normalized = json.filter(
+          t =>
+            t.autor?.trim() &&
+            t.titulo?.trim() &&
+            t.ano
+        ).map(t => ({
           ...t,
           ano: Number(t.ano)
         }))
@@ -37,7 +42,7 @@ export default function HomePage() {
   }, [])
 
   const years = useMemo(
-    () => [...new Set(data.map(t => t.ano))].sort((a, b) => b - a),
+    () => [...new Set(data.map(t => Number(t.ano)).filter(year => !isNaN(year) && year > 0))].sort((a, b) => b - a),
     [data]
   )
 
