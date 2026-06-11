@@ -19,16 +19,7 @@ export default function SearchBar({ value, onChange }: SearchBarProps) {
           className="input-field"
           style={{ borderRadius: 999, paddingLeft: 20, paddingRight: 20 }}
         />
-        <button
-          className="px-6 py-2 text-sm font-semibold text-white whitespace-nowrap"
-          style={{
-            background: '#1B3C73',
-            borderRadius: 999,
-            cursor: 'pointer',
-          }}
-        >
-          Buscar
-        </button>
+        
       </div>
     </div>
   )

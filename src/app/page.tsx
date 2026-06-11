@@ -89,25 +89,24 @@ export default function HomePage() {
     <>
    
       <header
-        className="relative overflow-hidden"
+        className="relative overflow-hidden mb-12"
       >
         
         <div
           className="absolute inset-0"
           style={{
-            backgroundImage: 'url(/math-bg.jpg)',
+            backgroundImage: "url('/books-bg.jpg')",
             backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            opacity: 0.08,
-            filter: 'invert(1)',
+            backgroundPosition: 'center'
           }}
         />
+
+        <div className="absolute inset-0 bg-black/60"></div>
 
        
         <div className="relative z-10 max-w-6xl mx-auto px-6 pt-20 pb-10 text-center">
           <h1
-            className="text-4xl md:text-5xl font-bold mb-3"
-            style={{ color: '#1B3C73' }}
+            className="text-4xl md:text-5xl font-bold mb-3 text-white"
           >
             Banco de TCCs
           </h1>
@@ -117,14 +116,13 @@ export default function HomePage() {
             style={{
               width: 70,
               height: 4,
-              background: '#1B3C73',
+              background: '#2EA3F2',
               borderRadius: 999,
             }}
           />
 
           <p
-            className="mt-4 text-base"
-            style={{ color: '#666' }}
+            className="mt-4 text-base text-gray-200"
           >
             Trabalhos de Conclusão de Curso — Matemática · UEFS
           </p>
