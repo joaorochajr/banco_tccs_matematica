@@ -1,13 +1,14 @@
 'use client'
 
-import { useEffect, useState, useMemo } from 'react'
-import { TCC, SortField, SortDir } from '@/types/tcc'
 import SearchBar from '@/components/SearchBar'
 import TCCTable from '@/components/TCCTable'
 import YearFilter from '@/components/YearFilter'
+import { SortDir, SortField, TCC } from '@/types/tcc'
+import { useEffect, useMemo, useState } from 'react'
 
+// TODO: Mover isso aqui para uma variável de ambiente e ajustar no deploy da vercel
 const API_URL =
-  'https://script.google.com/macros/s/AKfycbzi-Y4qCJfyF0Wf0TG-dTc3AbkAhfg-3k3rn27kfwW1PfyKVpCVOHodFFpYWm3fnWiD7w/exec'
+  'https://script.google.com/macros/s/AKfycbzknCwoeXycvSg_vBzpEw1vLuNL-sO8p5KEO2JYDYisKv-6D2WbO3pU3g7yjw8X3w2dcQ/exec'
 
 export default function HomePage() {
   const [data, setData] = useState<TCC[]>([])
@@ -49,7 +50,10 @@ export default function HomePage() {
   }
 
   const filtered = useMemo(() => {
-    const q = query.toLowerCase().trim()
+    const normalizeStr = (str: string) =>
+      str ? str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase() : ''
+
+    const q = normalizeStr(query.trim())
     let result = data
 
     if (yearFilter !== null) {
@@ -59,10 +63,10 @@ export default function HomePage() {
     if (q) {
       result = result.filter(
         t =>
-          t.autor.toLowerCase().includes(q) ||
-          t.titulo.toLowerCase().includes(q) ||
+          normalizeStr(t.autor).includes(q) ||
+          normalizeStr(t.titulo).includes(q) ||
           String(t.ano).includes(q) ||
-          t.orientador.toLowerCase().includes(q)
+          normalizeStr(t.orientador).includes(q)
       )
     }
 
