@@ -27,7 +27,6 @@ const COLS: { field: SortField; label: string; width: string }[] = [
 
 const INFINITE_BATCH = 30
 const INFINITE_LOAD  = 20
-const PAGE_SIZE      = 20
 
 type ViewMode = 'infinite' | 'paginated'
 
@@ -138,6 +137,7 @@ export default function TCCTable({ data, sortField, sortDir, onSort }: TableProp
 
   // ── Pagination state ──
   const [page, setPage] = useState(1)
+  const [pageSize, setPageSize] = useState(20)
 
   // Reset when data changes (filter / sort)
   useEffect(() => {
@@ -183,9 +183,9 @@ export default function TCCTable({ data, sortField, sortDir, onSort }: TableProp
   }, [loadMore, mode])
 
   // ── Pagination ──
-  const totalPages = Math.ceil(data.length / PAGE_SIZE)
-  const pageStart  = (page - 1) * PAGE_SIZE
-  const pageEnd    = Math.min(page * PAGE_SIZE, data.length)
+  const totalPages = Math.ceil(data.length / pageSize)
+  const pageStart  = (page - 1) * pageSize
+  const pageEnd    = Math.min(page * pageSize, data.length)
   const pageRows   = data.slice(pageStart, pageEnd)
 
   // Scroll to top on page change
@@ -258,9 +258,29 @@ export default function TCCTable({ data, sortField, sortDir, onSort }: TableProp
 
           {/* Pagination bar — always visible, never scrolls */}
           <div className="pagination-bar" style={{ flexShrink: 0 }}>
-            <span className="pagination-info">
-              {pageStart + 1}–{pageEnd} de {data.length}
-            </span>
+            <div className="flex items-center gap-4">
+              <span className="pagination-info">
+                {pageStart + 1}–{pageEnd} de {data.length}
+              </span>
+              <div className="flex items-center gap-2 text-sm" style={{ color: '#666' }}>
+                <label htmlFor="pageSize">Itens por página:</label>
+                <select
+                  id="pageSize"
+                  value={pageSize}
+                  onChange={(e) => {
+                    setPageSize(Number(e.target.value))
+                    setPage(1)
+                  }}
+                  className="border rounded px-1 py-0.5 outline-none cursor-pointer"
+                  style={{ borderColor: '#ddd', background: '#fff' }}
+                >
+                  <option value={10}>10</option>
+                  <option value={20}>20</option>
+                  <option value={50}>50</option>
+                  <option value={100}>100</option>
+                </select>
+              </div>
+            </div>
 
             <div className="pagination-controls">
               <button className="page-btn" onClick={() => setPage(1)} disabled={page === 1} aria-label="Primeira página">«</button>
