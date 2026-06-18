@@ -9,6 +9,8 @@ interface TableProps {
   sortField: SortField
   sortDir: SortDir
   onSort: (field: SortField) => void
+  mode: ViewMode
+  onModeChange: (m: ViewMode) => void
 }
 
 function SortIcon({ field, sortField, sortDir }: { field: SortField; sortField: SortField; sortDir: SortDir }) {
@@ -28,7 +30,7 @@ const COLS: { field: SortField; label: string; width: string }[] = [
 const INFINITE_BATCH = 30
 const INFINITE_LOAD  = 20
 
-type ViewMode = 'infinite' | 'paginated'
+export type ViewMode = 'infinite' | 'paginated'
 
 // ─── Shared rows ─────────────────────────────────────────────────────────────
 function TableRows({ rows }: { rows: TCC[] }) {
@@ -101,7 +103,7 @@ function TableShell({
 }
 
 // ─── Mode toggle ──────────────────────────────────────────────────────────────
-function ModeToggle({ mode, onChange }: { mode: ViewMode; onChange: (m: ViewMode) => void }) {
+export function ModeToggle({ mode, onChange }: { mode: ViewMode; onChange: (m: ViewMode) => void }) {
   return (
     <div className="view-mode-toggle" role="group" aria-label="Modo de exibição">
       <button
@@ -125,8 +127,7 @@ function ModeToggle({ mode, onChange }: { mode: ViewMode; onChange: (m: ViewMode
 }
 
 // ─── Main component ───────────────────────────────────────────────────────────
-export default function TCCTable({ data, sortField, sortDir, onSort }: TableProps) {
-  const [mode, setMode] = useState<ViewMode>('infinite')
+export default function TCCTable({ data, sortField, sortDir, onSort, mode, onModeChange }: TableProps) {
 
   // ── Infinite scroll state ──
   const [visibleCount, setVisibleCount]   = useState(INFINITE_BATCH)
@@ -152,7 +153,7 @@ export default function TCCTable({ data, sortField, sortDir, onSort }: TableProp
 
   // Reset when switching modes
   const handleModeChange = (m: ViewMode) => {
-    setMode(m)
+    onModeChange(m)
     setVisibleCount(INFINITE_BATCH)
     setPage(1)
   }
@@ -207,10 +208,7 @@ export default function TCCTable({ data, sortField, sortDir, onSort }: TableProp
     /* Takes all space given by parent */
     <div style={{ height: '100%', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
 
-      {/* Toggle row — never scrolls */}
-      <div className="flex justify-end mb-2" style={{ flexShrink: 0 }}>
-        <ModeToggle mode={mode} onChange={handleModeChange} />
-      </div>
+
 
       {/* ── Infinite scroll mode ── */}
       {mode === 'infinite' && (

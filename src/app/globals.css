@@ -2,6 +2,12 @@
 
 @import "tailwindcss";
 
+@import "tw-animate-css";
+
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
 @layer base {
   body {
     font-family: 'Sora', sans-serif;
@@ -9,26 +15,67 @@
     color: #1a1a1a;
     /* height controlled by the app shell via 100dvh */
     overflow: hidden;
+    @apply bg-background text-foreground;
+  }
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    @apply font-sans;
   }
 }
 
 @layer components {
   .input-field {
     border: 1px solid #ccc;
+    border-radius: 8px;
     color: #1a1a1a;
     padding: 8px 12px;
+    height: 42px;
     width: 100%;
     font-size: 14px;
-    transition: border-color 0.2s;
+    font-family: inherit;
+    transition: border-color 0.2s, box-shadow 0.2s;
   }
 
   .input-field:focus {
     outline: none;
     border-color: #1B3C73;
+    box-shadow: 0 0 0 3px rgba(27, 60, 115, 0.08);
   }
 
   .input-field::placeholder {
     color: #999;
+  }
+
+  .select-field {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    color: #1a1a1a;
+    background: #fff;
+    padding: 8px 36px 8px 12px;
+    font-size: 14px;
+    font-family: inherit;
+    font-weight: 400;
+    height: 42px;
+    cursor: pointer;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    white-space: nowrap;
+  }
+
+  .select-field:focus {
+    outline: none;
+    border-color: #1B3C73;
+    box-shadow: 0 0 0 3px rgba(27, 60, 115, 0.08);
+  }
+
+  .select-field:hover {
+    border-color: #aaa;
   }
 
   .sort-btn {
@@ -222,4 +269,5 @@
     color: #aaa;
     user-select: none;
   }
-}
+}
+
