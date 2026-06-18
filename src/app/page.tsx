@@ -1,7 +1,7 @@
 'use client'
 
 import SearchBar from '@/components/SearchBar'
-import TCCTable from '@/components/TCCTable'
+import TCCTable, { ModeToggle, ViewMode } from '@/components/TCCTable'
 import YearFilter from '@/components/YearFilter'
 import { SortDir, SortField, TCC } from '@/types/tcc'
 import { useEffect, useMemo, useState } from 'react'
@@ -18,6 +18,7 @@ export default function HomePage() {
   const [yearFilter, setYearFilter] = useState<number | null>(null)
   const [sortField, setSortField] = useState<SortField>('ano')
   const [sortDir, setSortDir] = useState<SortDir>('desc')
+  const [mode, setMode] = useState<ViewMode>('infinite')
 
   useEffect(() => {
     fetch(API_URL)
@@ -124,28 +125,34 @@ export default function HomePage() {
       >
         {/* Static top: search + filters + count — does NOT scroll */}
         <div style={{ flexShrink: 0 }}>
-          <SearchBar
-            value={query}
-            onChange={setQuery}
-            resultCount={filtered.length}
-            totalCount={data.length}
-          />
+          {/* SearchBar — full width */}
+          <div className="mb-3">
+            <SearchBar
+              value={query}
+              onChange={setQuery}
+              resultCount={filtered.length}
+              totalCount={data.length}
+            />
+          </div>
 
-          {!loading && years.length > 0 && (
-            <YearFilter years={years} selected={yearFilter} onSelect={setYearFilter} />
+          {/* Info bar: YearFilter | count | ModeToggle */}
+          {!loading && !error && (
+            <div className="flex flex-wrap items-center gap-3 mb-2">
+              {years.length > 0 && (
+                <YearFilter years={years} selected={yearFilter} onSelect={setYearFilter} />
+              )}
+              <p className="text-sm text-gray-600 flex-1">
+                Exibindo <strong>{filtered.length}</strong> resultado
+                {filtered.length !== 1 ? 's' : ''}:
+              </p>
+              <ModeToggle mode={mode} onChange={setMode} />
+            </div>
           )}
 
           {error && (
             <div className="p-4 text-sm text-red-600 border border-red-200 rounded mt-3">
               {error}
             </div>
-          )}
-
-          {!loading && !error && (
-            <p className="text-sm mb-2 text-gray-600">
-              Exibindo <strong>{filtered.length}</strong> resultado
-              {filtered.length !== 1 ? 's' : ''}:
-            </p>
           )}
         </div>
 
@@ -166,6 +173,8 @@ export default function HomePage() {
               sortField={sortField}
               sortDir={sortDir}
               onSort={handleSort}
+              mode={mode}
+              onModeChange={setMode}
             />
           </div>
         )}
