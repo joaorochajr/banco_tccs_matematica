@@ -5,6 +5,7 @@ import TCCTable, { ModeToggle, ViewMode } from '@/components/TCCTable'
 import YearFilter from '@/components/YearFilter'
 import { SortDir, SortField, TCC } from '@/types/tcc'
 import { useEffect, useMemo, useState } from 'react'
+import SobreModal from '@/components/SobreModal'
 
 // TODO: Mover isso aqui para uma variável de ambiente e ajustar no deploy da vercel
 const API_URL =
@@ -19,6 +20,7 @@ export default function HomePage() {
   const [sortField, setSortField] = useState<SortField>('ano')
   const [sortDir, setSortDir] = useState<SortDir>('desc')
   const [mode, setMode] = useState<ViewMode>('infinite')
+  const [sobreOpen, setSobreOpen] = useState(false)
 
   useEffect(() => {
     fetch(API_URL)
@@ -106,6 +108,12 @@ export default function HomePage() {
           <p className="mt-3 text-base text-gray-200">
             Trabalhos de Conclusão de Curso — Matemática · UEFS
           </p>
+          <button
+            onClick={() => setSobreOpen(true)}
+            className="absolute top-4 right-6 text-sm text-gray-200 hover:text-white border border-white/30 hover:border-white/60 rounded-full px-4 py-1.5 transition-colors cursor-pointer"
+          >
+            Sobre
+          </button>
         </div>
       </header>
 
@@ -170,6 +178,7 @@ export default function HomePage() {
           <div style={{ flex: 1, minHeight: 0, overflow: 'hidden' }}>
             <TCCTable
               data={filtered}
+              query={query}
               sortField={sortField}
               sortDir={sortDir}
               onSort={handleSort}
@@ -179,6 +188,9 @@ export default function HomePage() {
           </div>
         )}
       </main>
+
+      <SobreModal open={sobreOpen} onClose={() => setSobreOpen(false)} />
+
     </div>
   )
 }

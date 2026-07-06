@@ -6,6 +6,7 @@ import { useEffect, useRef, useState, useCallback } from 'react'
 
 interface TableProps {
   data: TCC[]
+  query: string
   sortField: SortField
   sortDir: SortDir
   onSort: (field: SortField) => void
@@ -32,8 +33,55 @@ const INFINITE_LOAD  = 20
 
 export type ViewMode = 'infinite' | 'paginated'
 
+function highlight(text: string, query: string) {
+  if (!query.trim()) return text;
+
+  const normalizedQuery = query
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase();
+
+  const chars = [...text];
+
+  const normalizedChars = chars.map(c =>
+    c.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+  );
+
+  const normalizedText = normalizedChars.join("").toLowerCase();
+
+  const parts: React.ReactNode[] = [];
+
+  let current = 0;
+
+  while (true) {
+    const index = normalizedText.indexOf(normalizedQuery, current);
+
+    if (index === -1) {
+      parts.push(chars.slice(current).join(""));
+      break;
+    }
+
+    if (index > current) {
+      parts.push(chars.slice(current, index).join(""));
+    }
+
+    parts.push(
+      <mark
+        key={index}
+        className="bg-yellow-200 font-bold px-0.5 rounded"
+      >
+        {chars.slice(index, index + normalizedQuery.length).join("")}
+      </mark>
+    );
+
+    current = index + normalizedQuery.length;
+  }
+
+  return parts;
+}
+
 // ─── Shared rows ─────────────────────────────────────────────────────────────
-function TableRows({ rows }: { rows: TCC[] }) {
+function TableRows({ rows, query }: { rows: TCC[]; query: string }) {
   return (
     <>
       {rows.map((tcc, i) => (
@@ -46,7 +94,7 @@ function TableRows({ rows }: { rows: TCC[] }) {
             animationDelay: `${Math.min(i * 28, 280)}ms`,
           }}
         >
-          <td className="py-3 px-3 text-xs" style={{ color: '#222' }}>{tcc.autor}</td>
+          <td className="py-3 px-3 text-xs" style={{ color: '#222' }}>{highlight(tcc.autor, query)}</td>
           <td className="py-3 px-3 text-xs">
             {tcc.link ? (
               <a
@@ -56,14 +104,14 @@ function TableRows({ rows }: { rows: TCC[] }) {
                 style={{ color: '#1B3C73' }}
                 className="hover:underline"
               >
-                {tcc.titulo}
+                {highlight(tcc.titulo, query)}
               </a>
             ) : (
-              <span style={{ color: '#444' }}>{tcc.titulo}</span>
+              <span style={{ color: '#444' }}>{highlight(tcc.titulo, query)}</span>
             )}
           </td>
-          <td className="py-3 px-3 text-xs" style={{ color: '#222' }}>{tcc.ano}</td>
-          <td className="py-3 px-3 text-xs" style={{ color: '#444' }}>{tcc.orientador}</td>
+          <td className="py-3 px-3 text-xs" style={{ color: '#222' }}>{highlight(String(tcc.ano), query)}</td>
+          <td className="py-3 px-3 text-xs" style={{ color: '#444' }}>{highlight(tcc.orientador, query)}</td>
         </tr>
       ))}
     </>
@@ -127,7 +175,7 @@ export function ModeToggle({ mode, onChange }: { mode: ViewMode; onChange: (m: V
 }
 
 // ─── Main component ───────────────────────────────────────────────────────────
-export default function TCCTable({ data, sortField, sortDir, onSort, mode, onModeChange }: TableProps) {
+export default function TCCTable({ data, sortField, sortDir, onSort, mode, onModeChange, query }: TableProps) {
 
   // ── Infinite scroll state ──
   const [visibleCount, setVisibleCount]   = useState(INFINITE_BATCH)
@@ -218,7 +266,7 @@ export default function TCCTable({ data, sortField, sortDir, onSort, mode, onMod
           style={{ flex: 1, minHeight: 0, overflowY: 'auto', overflowX: 'auto' }}
         >
           <TableShell sortField={sortField} sortDir={sortDir} onSort={onSort}>
-            <TableRows rows={data.slice(0, visibleCount)} />
+            <TableRows rows={data.slice(0, visibleCount)} query={query}/>
           </TableShell>
 
           {/* Sentinel: IntersectionObserver watches this inside the scroll div */}
@@ -250,7 +298,7 @@ export default function TCCTable({ data, sortField, sortDir, onSort, mode, onMod
             style={{ flex: 1, minHeight: 0, overflowY: 'auto', overflowX: 'auto' }}
           >
             <TableShell sortField={sortField} sortDir={sortDir} onSort={onSort}>
-              <TableRows rows={pageRows} />
+              <TableRows rows={pageRows} query={query} />
             </TableShell>
           </div>
 
