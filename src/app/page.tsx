@@ -6,6 +6,7 @@ import YearFilter from '@/components/YearFilter'
 import { SortDir, SortField, TCC } from '@/types/tcc'
 import { useEffect, useMemo, useState } from 'react'
 import SobreModal from '@/components/SobreModal'
+import Image from 'next/image'
 
 // TODO: Mover isso aqui para uma variável de ambiente e ajustar no deploy da vercel
 const API_URL =
@@ -97,17 +98,29 @@ export default function HomePage() {
           }}
         />
         <div className="absolute inset-0 bg-black/60" />
+        
         <div className="relative z-10 max-w-6xl mx-auto px-6 pt-10 pb-6 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-3 text-white">
-            Banco de TCCs
-          </h1>
+          <div className="flex items-center justify-center gap-3 mb-3">
+            
+            <h1 className="text-4xl md:text-5xl font-bold text-white">
+              Banco de TCCs
+            </h1>
+          </div>
           <div
             className="mx-auto"
             style={{ width: 70, height: 4, background: '#2EA3F2', borderRadius: 999 }}
-          />
-          <p className="mt-3 text-base text-gray-200">
-            Trabalhos de Conclusão de Curso — Matemática · UEFS
-          </p>
+  />
+          <div className="mt-3 flex items-center justify-center">
+            <Image
+              src="/logo.png"
+              alt="Logo Banco de TCCs"
+              width={40}
+              height={30}
+            />
+            <p className="text-base text-gray-200">
+              Trabalhos de Conclusão de Curso — Matemática · UEFS
+            </p>
+          </div>
           <button
             onClick={() => setSobreOpen(true)}
             className="absolute top-4 right-6 text-sm text-gray-200 hover:text-white border border-white/30 hover:border-white/60 rounded-full px-4 py-1.5 transition-colors cursor-pointer"
