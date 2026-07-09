@@ -1,16 +1,16 @@
 'use client'
 
 import SearchBar from '@/components/SearchBar'
+import SobreModal from '@/components/SobreModal'
 import TCCTable, { ModeToggle, ViewMode } from '@/components/TCCTable'
 import YearFilter from '@/components/YearFilter'
 import { SortDir, SortField, TCC } from '@/types/tcc'
-import { useEffect, useMemo, useState } from 'react'
-import SobreModal from '@/components/SobreModal'
 import Image from 'next/image'
+import { useEffect, useMemo, useState } from 'react'
 
 // TODO: Mover isso aqui para uma variável de ambiente e ajustar no deploy da vercel
 const API_URL =
-  'https://script.google.com/macros/s/AKfycbzknCwoeXycvSg_vBzpEw1vLuNL-sO8p5KEO2JYDYisKv-6D2WbO3pU3g7yjw8X3w2dcQ/exec'
+  'https://script.google.com/macros/s/AKfycbzxp6uQLsOwd5w33YwyKkxiXA84Kw7d-y4VCVM6VqlolmbQPateri39XmumycvbwjI5/exec'
 
 export default function HomePage() {
   const [data, setData] = useState<TCC[]>([])
@@ -98,10 +98,10 @@ export default function HomePage() {
           }}
         />
         <div className="absolute inset-0 bg-black/60" />
-        
+
         <div className="relative z-10 max-w-6xl mx-auto px-6 pt-10 pb-6 text-center">
           <div className="flex items-center justify-center gap-3 mb-3">
-            
+
             <h1 className="text-4xl md:text-5xl font-bold text-white">
               Banco de TCCs
             </h1>
@@ -109,7 +109,7 @@ export default function HomePage() {
           <div
             className="mx-auto"
             style={{ width: 70, height: 4, background: '#2EA3F2', borderRadius: 999 }}
-  />
+          />
           <div className="mt-3 flex items-center justify-center">
             <Image
               src="/logo.png"
